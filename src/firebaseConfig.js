@@ -17,7 +17,7 @@ const db = firebase.firestore()
 const gamesCollection = db.collection('games')
 const fieldValue = firestore.FieldValue
 
-export {
+export default {
   db,
   gamesCollection,
   fieldValue

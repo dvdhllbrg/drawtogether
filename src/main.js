@@ -7,6 +7,14 @@ import './assets/scss/app.scss'
 
 Vue.use(Buefy)
 
+Vue.mixin({
+  methods: {
+    getImageUrl (slug) {
+      return require(`@/assets/${slug}.png`)
+    }
+  }
+})
+
 Vue.config.productionTip = false
 
 new Vue({
