@@ -1,18 +1,40 @@
-<template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<template lang="pug">
+  section#home
+    .container
+        b-field(label="Game ID")
+          b-input(v-model="gameId")
+        b-field(label="Your name")
+          b-input(v-model="playerName")
+        b-button(
+          type="is-primary"
+          @click="joinGame"
+        ) Join game
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  data: () => ({
+    gameId: '',
+    playerName: ''
+  }),
+  methods: {
+    joinGame () {
+      this.joinFbGame({
+        game: this.gameId.toUpperCase(),
+        name: this.playerName
+      })
+    },
+    ...mapActions([
+      'createGame',
+      'joinFbGame'
+    ])
   }
 }
 </script>
+
+<style lang="scss">
+
+</style>
