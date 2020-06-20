@@ -32,10 +32,13 @@ export default {
   computed: {
     helpText () {
       switch (this.gameState) {
-        case gameStates.NOT_CREATED:
-          return 'Haaaai'
+        case gameStates.NOT_JOINED:
+          return `
+            <p>Here is how you do what you want to do</p>
+            <p>And so on and so forth</p>
+          `
         default:
-          return ''
+          return 'No help text defined for this game state!'
       }
     }
   },

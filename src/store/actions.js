@@ -18,7 +18,8 @@ export default {
       const game = {
         room,
         image: await getImage(),
-        players: [player]
+        players: [player],
+        vipName: name
       }
 
       await fb.gamesCollection.doc(room).set(game)

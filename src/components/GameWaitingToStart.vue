@@ -1,23 +1,26 @@
 <template lang="pug">
   .container
     h1.title 👋 Hi {{ player.name }}!
-    p.subtitle Welcome to room
+    p.subtitle Welcome to room&nbsp;
       b {{ game.room }}
+      |. What a gang you've got here:
     #players
       .columns.is-multiline.is-mobile(v-show="game.players.length > 0")
         .column.is-one-third(v-for="gp in game.players")
-          figure.image.is-128x128
+          figure.image.is-96x96
             img.is-rounded(
               v-if="gp.avatar"
               alt="Player avatar"
               :src="getImageUrl(gp.avatar)"
             )
             span.avatar(v-else) 🙈
-            b-tag(
-              v-if="gp.vip"
-            ) VIP!
+          b-tag(
+            v-if="gp.vip"
+            size="is-medium"
+            type="is-primary"
+          ) VIP!
           p.title.is-4 {{ gp.name }}
-    p While you're waiting for XYZ to start the game, we figured we'd tell you a little bit about how it works, in case you're unfamiliar.
+    p Invite players by sending them this
     h2.title 🤓 Here's how this works
     p Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.
     p Gumbo beet greens corn soko endive gumbo gourd. Parsley shallot courgette tatsoi pea sprouts fava bean collard greens dandelion okra wakame tomato. Dandelion cucumber earthnut pea peanut soko zucchini.
@@ -49,14 +52,20 @@ export default {
   padding: 2rem;
 
   #players {
+    .column {
+      position: relative;
+    }
+
     .avatar {
-      font-size: 48px;
-      line-height: 48px;
+      font-size: 72px;
+      line-height: 72px;
     }
 
     .tag {
-      margin-left: -2.5rem;
-      transform: rotate(-15deg);
+      position: absolute;
+      bottom: 48px;
+      right: 18px;
+      transform: rotate(-20deg);
     }
   }
 }
