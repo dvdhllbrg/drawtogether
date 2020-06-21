@@ -29,7 +29,7 @@
         .playerSubmission(
           v-for="player in sortedPlayers"
           :key="player.id"
-          :class="{right: player.pos.j % 2 === 0}"
+          :class="playerPosClass(player.pos)"
         )
           game-image-canvas(:img="playerImages[player.id].img")
           .playerInfo(v-show="showPlayerInfo")
@@ -49,7 +49,8 @@
         expanded
       ) 📤 Share your painting
       b-button(
-        @click=""
+        v-if="player.vip"
+        @click="restartGame"
         size="is-large"
         type="is-primary"
         expanded
@@ -58,7 +59,7 @@
 
 <script>
 import { createImage } from '../utils'
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import compareImages from 'resemblejs/compareImages'
 import HeaderNavbar from './HeaderNavbar'
 import GameImageCanvas from './GameImageCanvas'
@@ -80,7 +81,8 @@ export default {
       return this.game.image.artists.join(', ')
     },
     ...mapState([
-      'game'
+      'game',
+      'player'
     ]),
     ...mapGetters([
       'sortedPlayers'
@@ -123,6 +125,13 @@ export default {
     this.similarity = Math.round((100 - diff.rawMisMatchPercentage) * 100) / 100
   },
   methods: {
+    playerPosClass (pos) {
+      if (this.game.players.length % 2 === 0 && this.game.players.length > 2) {
+        return pos.j % 2 === 0 ? 'right' : 'left'
+      } else {
+        return 'center'
+      }
+    },
     getSimilarityEmoji (similarity) {
       if (this.similarity < 10) {
         return '😬'
@@ -130,7 +139,10 @@ export default {
         return '👏'
       }
       return '🤯'
-    }
+    },
+    ...mapActions([
+      'restartGame'
+    ])
   }
 }
 </script>
@@ -151,7 +163,7 @@ html {
 #gameFinished {
   #playerSubmissions {
     display: grid;
-    justify-items: left;
+    justify-items: center;
 
     .playerSubmission {
       display: flex;
@@ -161,6 +173,10 @@ html {
 
       &.right {
         justify-self: right;
+      }
+
+      &.left {
+        justify-self: left;
       }
 
       .playerInfo {

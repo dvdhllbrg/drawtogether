@@ -49,7 +49,7 @@ export default {
       console.error(err)
     }
   },
-  async startGame ({ state, commit }) {
+  async startGame ({ state }) {
     const players = state.game.players
 
     const image = await createImage(state.game.image.href)
@@ -85,6 +85,20 @@ export default {
       players: updatedPlayers,
       imagesContainerStyles
     })
+  },
+  async restartGame ({ state, dispatch }) {
+    await fb.gamesCollection.doc(state.game.room).update({
+      image: await getImage(),
+      active: false,
+      players: state.game.players.map(p => ({
+        id: p.id,
+        name: p.name,
+        avatar: p.name,
+        vip: p.vip
+      }))
+    })
+
+    dispatch('startGame')
   },
   async sendImage ({ state, commit }) {
     const canvasDataUrl = state.drawingCanvas.toDataURL()
@@ -126,7 +140,7 @@ async function updateLocalGame (commit, dispatch, state, game) {
   const me = gameData.players.find(p => p.id === state.player.id)
   const allSubmitted = gameData.players.every(p => p.submission)
 
-  if (gameData.active && state.gameState === gameStates.WAITING_TO_START) {
+  if (gameData.active && [gameStates.WAITING_TO_START, gameStates.FINISHED].includes(state.gameState)) {
     commit('setSplit', {
       ...me.split,
       img: await createImage(me.split.img.ac.it)

@@ -33,7 +33,7 @@
                 :src="getImageUrl(p.avatar)"
               )
               span.avatar(v-else) 🙈
-            p.title.is-4 {{ p.name }}
+            p.title.is-5 {{ p.name }}
 </template>
 
 <script>
