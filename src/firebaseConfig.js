@@ -15,10 +15,10 @@ firebase.initializeApp(config)
 
 const db = firebase.firestore()
 const gamesCollection = db.collection('games')
-const fieldValue = firestore.FieldValue
 
 export default {
   db,
   gamesCollection,
-  fieldValue
+  FieldValue: firestore.FieldValue,
+  Blob: firestore.Blob
 }

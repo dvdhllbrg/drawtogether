@@ -7,5 +7,14 @@ export default {
   },
   setGameState (state, gameState) {
     state.gameState = gameState
+  },
+  setSplit (state, split) {
+    state.split = split
+  },
+  setDrawingCanvas (state, canvas) {
+    state.drawingCanvas = canvas
+  },
+  decTimer (state) {
+    state.timer--
   }
 }
