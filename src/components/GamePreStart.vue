@@ -1,6 +1,6 @@
 <template lang="pug">
   #gamePreStart
-    header-navbar
+    game-header
     .container
       b-progress(
         :max="15"
@@ -21,12 +21,12 @@
 <script>
 import { mapState } from 'vuex'
 import GameImageCanvas from './GameImageCanvas'
-import HeaderNavbar from './HeaderNavbar'
+import GameHeader from './GameHeader'
 
 export default {
   name: 'GamePreStart',
   components: {
-    HeaderNavbar,
+    GameHeader,
     GameImageCanvas
   },
   data: () => ({

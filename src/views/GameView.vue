@@ -1,5 +1,6 @@
 <template lang="pug">
   section#game
+    b-loading(:active="loading")
     game-join(
       v-if="gameState === gameStates.NOT_JOINED"
       :initRoom="room"
@@ -41,7 +42,8 @@ export default {
   computed: {
     gameStates: () => gameStates,
     ...mapState([
-      'gameState'
+      'gameState',
+      'loading'
     ])
   }
 }

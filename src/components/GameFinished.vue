@@ -1,6 +1,6 @@
 <template lang="pug">
   #gameFinished
-    header-navbar
+    game-header
     .container
       p.px-2.my-2.is-size-4.has-text-centered {{ getSimilarityEmoji(similarity) }} Your collaborative picture is {{ similarity }}% similar to the original! {{ getSimilarityEmoji(similarity)  }}
       h2.px-1.title.is-5 The original
@@ -44,10 +44,12 @@
               p.title.is-5.is-pulled-left.is-marginless {{ player.name }}
             p {{ playerImages[player.id].emoji  }} {{ playerImages[player.id].similarity }}% similar
       b-button.mb-2(
-        @click=""
+        tag="a"
+        :href="imageDataUrl"
+        :download="imageFileName"
         size="is-large"
         expanded
-      ) 📤 Share your painting
+      ) 📥 Download your painting
       b-button(
         v-if="player.vip"
         @click="restartGame"
@@ -61,22 +63,26 @@
 import { createImage } from '../utils'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import compareImages from 'resemblejs/compareImages'
-import HeaderNavbar from './HeaderNavbar'
+import GameHeader from './GameHeader'
 import GameImageCanvas from './GameImageCanvas'
 
 export default {
   name: 'GameFinished',
   components: {
-    HeaderNavbar,
+    GameHeader,
     GameImageCanvas
   },
   data: () => ({
     playerImages: null,
     showPlayerInfo: true,
     showPaintingInfo: true,
-    similarity: 0
+    similarity: 0,
+    imageDataUrl: ''
   }),
   computed: {
+    imageFileName () {
+      return `${this.game.players.map(p => p.name).join('_')}.png`
+    },
     artists () {
       return this.game.image.artists.join(', ')
     },
@@ -115,10 +121,11 @@ export default {
       ctx.drawImage(img, 0, 0, img.width, img.height, p.split.x, p.split.y, p.split.width, p.split.height)
     }
     this.playerImages = playerImages
+    this.imageDataUrl = canvas.toDataURL()
 
     const diff = await compareImages(
       imgCanvas.toDataURL(),
-      canvas.toDataURL(),
+      this.imageDataUrl,
       { ignoreColors: true }
     )
 
@@ -126,7 +133,7 @@ export default {
   },
   methods: {
     playerPosClass (pos) {
-      if (this.game.players.length % 2 === 0 && this.game.players.length > 2) {
+      if (this.game.players.length > 2 && this.game.players.length % 2 === 0) {
         return pos.j % 2 === 0 ? 'right' : 'left'
       } else {
         return 'center'
@@ -192,6 +199,10 @@ html {
         }
       }
     }
+  }
+
+  .message-body {
+    border: 0;
   }
 }
 </style>

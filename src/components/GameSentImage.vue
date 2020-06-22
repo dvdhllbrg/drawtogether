@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    header-navbar
+    game-header
     b-progress(
       :max="6000"
       :value="timer"
@@ -38,13 +38,13 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import HeaderNavbar from './HeaderNavbar'
+import GameHeader from './GameHeader'
 import GameImageCanvas from './GameImageCanvas'
 
 export default {
   name: 'GameSentImage',
   components: {
-    HeaderNavbar,
+    GameHeader,
     GameImageCanvas
   },
   computed: {

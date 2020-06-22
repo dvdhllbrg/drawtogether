@@ -12,20 +12,20 @@
           ) 🚀 Send
       template(slot="burger")
         span.is-hidden
-    help-modal(
+    game-help-modal(
         :show.sync="showHelp"
         :gameState="gameState"
       )
 </template>
 
 <script>
-import HelpModal from './HelpModal'
+import GameHelpModal from './GameHelpModal'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'GameStarted',
+  name: 'GameHeader',
   components: {
-    HelpModal
+    GameHelpModal
   },
   props: {
     showSendButton: {

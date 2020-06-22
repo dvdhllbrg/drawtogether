@@ -1,6 +1,6 @@
 <template lang="pug">
   #gameStarted
-    header-navbar(
+    game-header(
       :showSendButton="true"
       @send="sendImage"
     )
@@ -121,14 +121,14 @@
 import { mapState, mapActions } from 'vuex'
 import GameImageCanvas from './GameImageCanvas'
 import GameDrawingCanvas from './GameDrawingCanvas'
-import HeaderNavbar from './HeaderNavbar'
+import GameHeader from './GameHeader'
 
 export default {
   name: 'GameStarted',
   components: {
     GameImageCanvas,
     GameDrawingCanvas,
-    HeaderNavbar
+    GameHeader
   },
   data: () => ({
     showReference: false,

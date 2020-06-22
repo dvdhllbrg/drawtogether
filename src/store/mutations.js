@@ -16,5 +16,8 @@ export default {
   },
   decTimer (state) {
     state.timer--
+  },
+  setLoading (state, loading) {
+    state.loading = loading
   }
 }

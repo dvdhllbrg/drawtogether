@@ -1,13 +1,13 @@
 <template lang="pug">
   div
-    header-navbar
+    game-header
     .container
       h1.title 👋 Hi {{ player.name }}!
       p.subtitle Welcome to room&nbsp;
         b {{ game.room }}
         |. What a gang you've got here!
       #players.my-5
-        .columns.is-multiline.is-mobile(v-show="game.players.length > 0")
+        .columns.is-multiline.is-mobile(v-show="game.players")
           .column.is-one-third(v-for="gp in game.players")
             figure.image.is-96x96
               img.is-rounded(
@@ -46,12 +46,12 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import HeaderNavbar from './HeaderNavbar'
+import GameHeader from './GameHeader'
 
 export default {
   name: 'GameWaitingToStart',
   components: {
-    HeaderNavbar
+    GameHeader
   },
   computed: {
     joinUrl () {

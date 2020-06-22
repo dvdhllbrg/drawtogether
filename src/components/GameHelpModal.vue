@@ -18,7 +18,7 @@
 import { gameStates } from '../utils'
 
 export default {
-  name: 'HelpModal',
+  name: 'GameHelpModal',
   props: {
     show: {
       type: Boolean,

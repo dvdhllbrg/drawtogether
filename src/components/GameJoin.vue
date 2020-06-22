@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    header-navbar
+    game-header
     .container
       b-field(label="👀 What do you want to look like?" custom-class="is-large")
         .control.columns.is-mobile.is-multiline
@@ -41,7 +41,7 @@
           type="is-primary"
           size="is-large"
           :disabled="!player.name"
-          @click="createGame(player.name)"
+          @click="createGame(player)"
         ) 🏠 Create game room
 
       p(v-if="mode === 'join'") Or, do you want to&nbsp;
@@ -60,12 +60,12 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import HeaderNavbar from './HeaderNavbar'
+import GameHeader from './GameHeader'
 
 export default {
   name: 'GameJoin',
   components: {
-    HeaderNavbar
+    GameHeader
   },
   props: {
     initRoom: {
