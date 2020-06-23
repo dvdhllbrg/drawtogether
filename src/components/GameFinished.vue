@@ -81,7 +81,7 @@ export default {
   }),
   computed: {
     imageFileName () {
-      return `${this.game.players.map(p => p.name).join('_')}.png`
+      return `${Object.values(this.game.players).map(p => p.name).join('_')}.png`
     },
     artists () {
       return this.game.image.artists.join(', ')

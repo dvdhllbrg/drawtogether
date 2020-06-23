@@ -10,6 +10,7 @@
     game-started(v-if="gameState === gameStates.STARTED")
     game-sent-image(v-if="gameState === gameStates.SENT_IMAGE")
     game-finished(v-if="gameState === gameStates.FINISHED")
+    game-restarting(v-if="gameState === gameStates.RESTARTING")
 </template>
 
 <script>
@@ -21,6 +22,7 @@ import GamePreStart from '../components/GamePreStart'
 import GameStarted from '../components/GameStarted'
 import GameSentImage from '../components/GameSentImage'
 import GameFinished from '../components/GameFinished'
+import GameRestarting from '../components/GameRestarting'
 
 export default {
   name: 'GameView',
@@ -30,7 +32,8 @@ export default {
     GamePreStart,
     GameStarted,
     GameSentImage,
-    GameFinished
+    GameFinished,
+    GameRestarting
   },
   props: {
     room: {

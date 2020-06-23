@@ -1,5 +1,5 @@
 export default {
-  sortedPlayers: state => [...state.game.players].sort((a, b) => {
+  sortedPlayers: state => Object.values(state.game.players).sort((a, b) => {
     if (!a.pos || !b.pos) {
       return 0
     }
@@ -9,5 +9,5 @@ export default {
       return a.pos.i - b.pos.i
     }
   }),
-  unfinishedPlayers: state => [...state.game.players].filter(p => !p.submission)
+  unfinishedPlayers: state => Object.values(state.game.players).filter(p => !p.submission)
 }

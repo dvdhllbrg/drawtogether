@@ -1,7 +1,7 @@
 async function getImage (retry = 0) {
   let res
   try {
-    res = await fetch(`https://api.harvardartmuseums.org/object?apikey=${process.env.VUE_APP_API_KEY}&hasimage=1&size=1&worktype=244&fields=images,creditline,dated,description,medium,people,title,url&sort=random:${Math.round(Math.random() * 1000000)}`)
+    res = await fetch(`https://api.harvardartmuseums.org/object?apikey=${process.env.VUE_APP_ART_API_KEY}&hasimage=1&size=1&worktype=244&fields=images,creditline,dated,description,medium,people,title,url&sort=random:${Math.round(Math.random() * 1000000)}`)
     if (!res.ok) {
       throw new Error(res.status)
     }
@@ -30,7 +30,7 @@ async function getImage (retry = 0) {
   }
 }
 
-function createImage (src) {
+async function createImage (src) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.addEventListener('load', () => resolve(img))
@@ -46,7 +46,8 @@ const gameStates = Object.freeze({
   PRE_START: 'PRE_START',
   STARTED: 'STARTED',
   SENT_IMAGE: 'SENT_IMAGE',
-  FINISHED: 'FINISHED'
+  FINISHED: 'FINISHED',
+  RESTARTING: 'RESTARTING'
 })
 
 async function divideImage (image, numberOfPlayers) {

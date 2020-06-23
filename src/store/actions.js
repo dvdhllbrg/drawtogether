@@ -17,7 +17,9 @@ export default {
       const game = {
         room,
         image: await getImage(),
-        players: [player],
+        players: {
+          [player.id]: player
+        },
         vipName: name,
         active: false
       }
@@ -30,9 +32,10 @@ export default {
   },
   async joinFbGame ({ state, dispatch, commit }, { room, player }) {
     commit('setLoading', true)
+    const id = Math.random().toString(36).substring(2, 6).toLowerCase()
     player = {
       ...player,
-      id: Math.random().toString(36).substring(2, 6).toLowerCase(),
+      id,
       vip: false
     }
     try {
@@ -41,7 +44,7 @@ export default {
       fb.gamesCollection.doc(room).onSnapshot(game => updateLocalGame(commit, dispatch, state, game.data()))
 
       await fb.gamesCollection.doc(room).update({
-        players: fb.FieldValue.arrayUnion(player)
+        [`players.${id}`]: player
       })
       commit('setGameState', gameStates.WAITING_TO_START)
     } catch (err) {
@@ -53,16 +56,16 @@ export default {
     const players = state.game.players
 
     const image = await createImage(state.game.image.href)
-    const { cols, rows, splits } = await divideImage(image, players.length)
-    const updatedPlayers = []
+    const { cols, rows, splits } = await divideImage(image, Object.keys(players).length)
+    const updatedPlayers = {}
 
     const imagesContainerStyles = {
       'grid-template-columns': 'auto '.repeat(cols).trim(),
       'grid-template-rows': 'auto '.repeat(rows).trim()
     }
 
-    for (let i = 0; i < players.length; i++) {
-      const split = splits[i]
+    for (const id in players) {
+      const split = splits.pop()
       const canvas = document.createElement('canvas')
       canvas.width = split.width
       canvas.height = split.height
@@ -70,14 +73,14 @@ export default {
       ctx.drawImage(image, split.x, split.y, split.width, split.height, 0, 0, split.width, split.height)
 
       const player = {
-        ...players[i],
+        ...players[id],
         pos: split.pos,
         split: {
           ...split,
           img: fb.Blob.fromBase64String(btoa(canvas.toDataURL()))
         }
       }
-      updatedPlayers.push(player)
+      updatedPlayers[player.id] = player
     }
 
     try {
@@ -95,7 +98,7 @@ export default {
       await fb.gamesCollection.doc(state.game.room).update({
         image: await getImage(),
         active: false,
-        players: state.game.players.map(p => ({
+        players: Object.values(state.game.players).map(p => ({
           id: p.id,
           name: p.name,
           avatar: p.avatar || null,
@@ -116,9 +119,9 @@ export default {
       image: await createImage(canvasDataUrl)
     })
     commit('setGameState', gameStates.SENT_IMAGE)
-    const players = [...state.game.players]
-    const meIndex = players.findIndex(p => p.id === state.player.id)
-    players[meIndex].submission = fb.Blob.fromBase64String(btoa(canvasDataUrl))
+    const id = state.player.id
+    const player = { ...state.game.players[id] }
+    player.submission = fb.Blob.fromBase64String(btoa(canvasDataUrl))
 
     const imgCanvas = document.createElement('canvas')
     const imgCtx = imgCanvas.getContext('2d')
@@ -133,14 +136,14 @@ export default {
       { ignoreColors: true }
     )
 
-    players[meIndex].similarity = Math.round((100 - diff.rawMisMatchPercentage) * 100) / 100
+    player.similarity = Math.round((100 - diff.rawMisMatchPercentage) * 100) / 100
 
     try {
       await fb.gamesCollection.doc(state.game.room).update({
-        players
+        [`players.${id}`]: player
       })
     } catch (err) {
-
+      console.error(err)
     }
   }
 }
@@ -151,11 +154,10 @@ async function updateLocalGame (commit, dispatch, state, game) {
   if (!game) {
     return
   }
-  commit('setCurrentGame', game)
-  const me = game.players.find(p => p.id === state.player.id)
-  const allSubmitted = game.players.every(p => p.submission)
+  const allSubmitted = Object.values(game.players).every(p => p.submission)
 
-  if (game.active && [gameStates.WAITING_TO_START, gameStates.FINISHED].includes(state.gameState)) {
+  if (game.active && [gameStates.WAITING_TO_START, gameStates.RESTARTING].includes(state.gameState)) {
+    const me = game.players[state.player.id]
     commit('setSplit', {
       ...me.split,
       img: await createImage(me.split.img.ac.it)
@@ -168,8 +170,11 @@ async function updateLocalGame (commit, dispatch, state, game) {
   } else if (allSubmitted && [gameStates.STARTED, gameStates.SENT_IMAGE].includes(state.gameState)) {
     clearTimeout(countdownTimer)
     commit('setGameState', gameStates.FINISHED)
+  } else if (game.image && state.game.image && game.image.id !== state.game.image.id) {
+    commit('setGameState', gameStates.RESTARTING)
   }
 
+  commit('setCurrentGame', game)
   commit('setLoading', false)
 }
 
@@ -178,8 +183,7 @@ async function countdown (state, commit, dispatch) {
     commit('decTimer')
     countdownTimer = setTimeout(() => countdown(state, commit, dispatch), 1000)
   } else {
-    const me = state.game.players.find(p => p.id === state.player.id)
-    if (!me.submission) {
+    if (!state.game.players[state.player.id].submission) {
       dispatch('sendImage')
     }
     await fb.gamesCollection.doc(state.game.room).update({

@@ -1,14 +1,13 @@
 import firebase, { firestore } from 'firebase/app'
 import 'firebase/firestore'
+import 'firebase/functions'
 
 const config = {
-  apiKey: 'AIzaSyDZJ6uu0_iubNZooUe-wgc41gjK0o8E2EQ',
-  authDomain: 'drawtogether-7e5e2.firebaseapp.com',
-  databaseURL: 'https://drawtogether-7e5e2.firebaseio.com',
-  projectId: 'drawtogether-7e5e2',
-  storageBucket: 'drawtogether-7e5e2.appspot.com',
-  messagingSenderId: '852804341149',
-  appId: '1:852804341149:web:56d128064ee328ab22b374'
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: `${process.env.VUE_APP_FIREBASE_PROJECT_ID}.firebaseapp.com`,
+  databaseURL: `https://${process.env.VUE_APP_FIREBASE_PROJECT_ID}.firebaseio.com`,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: `${process.env.VUE_APP_FIREBASE_PROJECT_ID}.appspot.com`
 }
 
 firebase.initializeApp(config)

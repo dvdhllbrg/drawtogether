@@ -10,7 +10,7 @@
       ) {{ remainingTime }}
       .px-5
         h1.title 🤩 Soon you'll be painting!
-        p This is the part of the painting you're supposed to recreate. If you need to watch it again while painting, just click the "Reference" button in the toolbar!
+        p This is the part of the painting you're supposed to recreate. If you need to watch it again while painting, just click the "🖼️ Reference" button in the toolbar!
       .my-4
         game-image-canvas(
           v-if="split.img"
