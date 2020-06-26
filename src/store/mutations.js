@@ -14,6 +14,9 @@ export default {
   setDrawingCanvas (state, canvas) {
     state.drawingCanvas = canvas
   },
+  setTimer (state, timer) {
+    state.timer = timer
+  },
   decTimer (state) {
     state.timer--
   },

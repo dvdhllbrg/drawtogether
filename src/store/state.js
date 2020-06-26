@@ -6,6 +6,6 @@ export default {
   player: null,
   split: null,
   drawingCanvas: null,
-  timer: 6000,
+  timer: 180,
   loading: false
 }

@@ -32,11 +32,59 @@
             b-button.is-fullwidth(
               type="is-primary"
               size="is-large"
-              @click="startGame"
+              @click="startGame(settings)"
             ) 🏁 Start game
         p(v-else) After everyone has joined,&nbsp;
           b {{ game.vipName }}&nbsp;
           |can start the game on their phone.
+      .my-2(v-if="player.vip")
+        h2.title ⚙️ Want to tweak the settings?
+        .my-2
+          label.label.is-large ⏲️ Time limit
+          b-field
+            b-radio-button(
+              v-model="settings.timeLimit"
+              :native-value="60"
+              size="is-medium"
+            ) 1 minute
+            b-radio-button(
+              v-model="settings.timeLimit"
+              :native-value="180"
+              size="is-medium"
+            ) 3 minutes
+            b-radio-button(
+              v-model="settings.timeLimit"
+              :native-value="300"
+              size="is-medium"
+            ) 5 minutes
+          p Turnip greens yarrow ricebean rutabaga endive cauliflower sea lettuce kohlrabi amaranth water spinach avocado daikon napa cabbage asparagus winter purslane kale.
+        .my-2
+          b-field(
+            label="🎨 Color affects similarity rating"
+            custom-class="is-large"
+          )
+            .level.is-mobile
+              span.level-item.is-size-3 No
+              b-switch.level-item(
+                v-model="settings.colorSimilarity"
+                size="is-large"
+              )
+              span.level-item.is-size-3 Yes
+          p Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.
+        .my-2
+          b-field(
+            label="🖼️ Show individual player similarity"
+            custom-class="is-large"
+          )
+            .level.is-mobile
+              span.level-item.is-size-3 No
+              b-switch.level-item(
+                v-model="settings.individualSimilarity"
+                size="is-large"
+              )
+              span.level-item.is-size-3 Yes
+          p Gumbo beet greens corn soko endive gumbo gourd. Parsley shallot courgette tatsoi pea sprouts fava bean collard greens dandelion okra wakame tomato. Dandelion cucumber earthnut pea peanut soko zucchini.
+
       .my-2
         h2.title 🤓 So here's how this is going to work
         p Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.
@@ -53,6 +101,13 @@ export default {
   components: {
     GameHeader
   },
+  data: () => ({
+    settings: {
+      timeLimit: 180,
+      colorSimilarity: false,
+      individualSimilarity: true
+    }
+  }),
   computed: {
     joinUrl () {
       return `${window.location.host}/${this.game.room}`

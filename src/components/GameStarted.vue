@@ -5,7 +5,7 @@
       @send="sendImage"
     )
     b-progress(
-      :max="6000"
+      :max="game.settings.timeLimit"
       :value="timer"
       size="is-large"
       show-value

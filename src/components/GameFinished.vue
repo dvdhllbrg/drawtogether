@@ -20,6 +20,7 @@
           h2.title.is-5.level-item Your creation
         .level-right
           b-button.level-item(
+            v-if="game.settings.individualSimilarity"
             @click="showPlayerInfo = !showPlayerInfo"
           ) 👁️ Toggle player info
       #playerSubmissions.my-5(
@@ -32,7 +33,10 @@
           :class="playerPosClass(player.pos)"
         )
           game-image-canvas(:img="playerImages[player.id].img")
-          .playerInfo(v-show="showPlayerInfo")
+          .playerInfo(
+            v-if="game.settings.individualSimilarity"
+            v-show="showPlayerInfo"
+          )
             .is-clearfix
               figure.image.is-24x24.is-pulled-left
                 img.is-rounded(
@@ -126,7 +130,7 @@ export default {
     const diff = await compareImages(
       imgCanvas.toDataURL(),
       this.imageDataUrl,
-      { ignoreColors: true }
+      { ignoreColors: !this.game.settings.colorSimilarity }
     )
 
     this.similarity = Math.round((100 - diff.rawMisMatchPercentage) * 100) / 100

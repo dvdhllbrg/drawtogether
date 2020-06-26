@@ -51,7 +51,7 @@ export default {
       console.error(err)
     }
   },
-  async startGame ({ state, commit }) {
+  async startGame ({ state, commit }, settings) {
     commit('setLoading', true)
     const players = state.game.players
 
@@ -87,7 +87,8 @@ export default {
       await fb.gamesCollection.doc(state.game.room).update({
         active: true,
         players: updatedPlayers,
-        imagesContainerStyles
+        imagesContainerStyles,
+        settings
       })
     } catch (err) {
       console.error(err)
@@ -133,7 +134,7 @@ export default {
     const diff = await compareImages(
       imgCanvas.toDataURL(),
       canvasDataUrl,
-      { ignoreColors: true }
+      { ignoreColors: !state.game.settings.colorSimilarity }
     )
 
     player.similarity = Math.round((100 - diff.rawMisMatchPercentage) * 100) / 100
@@ -165,6 +166,7 @@ async function updateLocalGame (commit, dispatch, state, game) {
     commit('setGameState', gameStates.PRE_START)
     setTimeout(() => {
       commit('setGameState', gameStates.STARTED)
+      commit('setTimer', game.settings.timeLimit)
       countdownTimer = countdown(state, commit, dispatch)
     }, 15 * 1000)
   } else if (allSubmitted && [gameStates.STARTED, gameStates.SENT_IMAGE].includes(state.gameState)) {
