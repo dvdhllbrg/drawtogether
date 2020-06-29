@@ -110,7 +110,7 @@ export default {
       console.error(err)
     }
 
-    dispatch('startGame')
+    dispatch('startGame', state.game.settings)
   },
   async sendImage ({ state, commit }) {
     commit('setLoading', true)

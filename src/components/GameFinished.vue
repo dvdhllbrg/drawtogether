@@ -54,9 +54,21 @@
         size="is-large"
         expanded
       ) 📥 Download your painting
+      b-collapse(
+        v-if="player.vip"
+        :open="false"
+      )
+        b-button.mb-2(
+          size="is-large"
+          slot="trigger"
+          expanded
+        ) ⚙️ Change settings
+        game-settings.px-2(
+            :settings.sync="settings"
+          )
       b-button(
         v-if="player.vip"
-        @click="restartGame"
+        @click="restartGame(settings)"
         size="is-large"
         type="is-primary"
         expanded
@@ -69,19 +81,22 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import compareImages from 'resemblejs/compareImages'
 import GameHeader from './GameHeader'
 import GameImageCanvas from './GameImageCanvas'
+import GameSettings from './GameSettings'
 
 export default {
   name: 'GameFinished',
   components: {
     GameHeader,
-    GameImageCanvas
+    GameImageCanvas,
+    GameSettings
   },
   data: () => ({
     playerImages: null,
     showPlayerInfo: true,
     showPaintingInfo: true,
     similarity: 0,
-    imageDataUrl: ''
+    imageDataUrl: '',
+    settings: {}
   }),
   computed: {
     imageFileName () {
@@ -99,6 +114,8 @@ export default {
     ])
   },
   async created () {
+    this.settings = { ...this.game.settings }
+
     const imgCanvas = document.createElement('canvas')
     const imgCtx = imgCanvas.getContext('2d')
     const image = await createImage(this.game.image.href)
