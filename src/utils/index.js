@@ -1,7 +1,7 @@
 async function getImage (retry = 0) {
   let res
   try {
-    res = await fetch(`https://api.harvardartmuseums.org/object?apikey=${process.env.VUE_APP_ART_API_KEY}&hasimage=1&size=1&worktype=244&fields=images,creditline,dated,description,medium,people,title,url&sort=random:${Math.round(Math.random() * 1000000)}`)
+    res = await fetch(`https://api.harvardartmuseums.org/object?apikey=${process.env.VUE_APP_ART_API_KEY}&hasimage=1&size=1&fields=images,creditline,dated,description,medium,people,title,url&q=imagepermissionlevel:0&sort=random:${Math.round(Math.random() * 1000000)}`)
     if (!res.ok) {
       throw new Error(res.status)
     }
