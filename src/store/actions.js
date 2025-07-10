@@ -1,6 +1,6 @@
-import fb from '../firebaseConfig'
-import { getImage, createImage, divideImage, gameStates } from '../utils'
 import compareImages from 'resemblejs/compareImages'
+import fb from '../firebaseConfig'
+import { createImage, divideImage, gameStates, getImage } from '../utils'
 
 export default {
   async createGame ({ state, dispatch, commit }, player) {
@@ -12,7 +12,11 @@ export default {
     try {
       commit('setPlayer', player)
 
-      fb.gamesCollection.doc(room).onSnapshot(game => updateLocalGame(commit, dispatch, state, game.data()))
+      fb.gamesCollection
+        .doc(room)
+        .onSnapshot((game) =>
+          updateLocalGame(commit, dispatch, state, game.data())
+        )
 
       const game = {
         room,
@@ -20,7 +24,7 @@ export default {
         players: {
           [player.id]: player
         },
-        vipName: name,
+        vipName: player.name,
         active: false
       }
 
@@ -41,7 +45,11 @@ export default {
     try {
       commit('setPlayer', player)
 
-      fb.gamesCollection.doc(room).onSnapshot(game => updateLocalGame(commit, dispatch, state, game.data()))
+      fb.gamesCollection
+        .doc(room)
+        .onSnapshot((game) =>
+          updateLocalGame(commit, dispatch, state, game.data())
+        )
 
       await fb.gamesCollection.doc(room).update({
         [`players.${id}`]: player
@@ -56,7 +64,10 @@ export default {
     const players = state.game.players
 
     const image = await createImage(state.game.image.href)
-    const { cols, rows, splits } = await divideImage(image, Object.keys(players).length)
+    const { cols, rows, splits } = await divideImage(
+      image,
+      Object.keys(players).length
+    )
     const updatedPlayers = {}
 
     const imagesContainerStyles = {
@@ -70,7 +81,17 @@ export default {
       canvas.width = split.width
       canvas.height = split.height
       const ctx = canvas.getContext('2d')
-      ctx.drawImage(image, split.x, split.y, split.width, split.height, 0, 0, split.width, split.height)
+      ctx.drawImage(
+        image,
+        split.x,
+        split.y,
+        split.width,
+        split.height,
+        0,
+        0,
+        split.width,
+        split.height
+      )
 
       const player = {
         ...players[id],
@@ -99,7 +120,7 @@ export default {
       await fb.gamesCollection.doc(state.game.room).update({
         image: await getImage(),
         active: false,
-        players: Object.values(state.game.players).map(p => ({
+        players: Object.values(state.game.players).map((p) => ({
           id: p.id,
           name: p.name,
           avatar: p.avatar || null,
@@ -131,13 +152,12 @@ export default {
     imgCanvas.height = image.height
 
     imgCtx.drawImage(image, 0, 0)
-    const diff = await compareImages(
-      imgCanvas.toDataURL(),
-      canvasDataUrl,
-      { ignoreColors: !state.game.settings.colorSimilarity }
-    )
+    const diff = await compareImages(imgCanvas.toDataURL(), canvasDataUrl, {
+      ignoreColors: !state.game.settings.colorSimilarity
+    })
 
-    player.similarity = Math.round((100 - diff.rawMisMatchPercentage) * 100) / 100
+    player.similarity =
+      Math.round((100 - diff.rawMisMatchPercentage) * 100) / 100
 
     try {
       await fb.gamesCollection.doc(state.game.room).update({
@@ -155,9 +175,14 @@ async function updateLocalGame (commit, dispatch, state, game) {
   if (!game) {
     return
   }
-  const allSubmitted = Object.values(game.players).every(p => p.submission)
+  const allSubmitted = Object.values(game.players).every((p) => p.submission)
 
-  if (game.active && [gameStates.WAITING_TO_START, gameStates.RESTARTING].includes(state.gameState)) {
+  if (
+    game.active &&
+    [gameStates.WAITING_TO_START, gameStates.RESTARTING].includes(
+      state.gameState
+    )
+  ) {
     const me = game.players[state.player.id]
     commit('setSplit', {
       ...me.split,
@@ -169,10 +194,17 @@ async function updateLocalGame (commit, dispatch, state, game) {
       commit('setTimer', game.settings.timeLimit)
       countdownTimer = countdown(state, commit, dispatch)
     }, 15 * 1000)
-  } else if (allSubmitted && [gameStates.STARTED, gameStates.SENT_IMAGE].includes(state.gameState)) {
+  } else if (
+    allSubmitted &&
+    [gameStates.STARTED, gameStates.SENT_IMAGE].includes(state.gameState)
+  ) {
     clearTimeout(countdownTimer)
     commit('setGameState', gameStates.FINISHED)
-  } else if (game.image && state.game.image && game.image.id !== state.game.image.id) {
+  } else if (
+    game.image &&
+    state.game.image &&
+    game.image.id !== state.game.image.id
+  ) {
     commit('setGameState', gameStates.RESTARTING)
   }
 

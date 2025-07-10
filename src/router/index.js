@@ -1,8 +1,5 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import GameView from '../views/GameView.vue'
-
-Vue.use(VueRouter)
 
 const routes = [
   {
@@ -13,9 +10,8 @@ const routes = [
   }
 ]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createMemoryHistory(),
   routes
 })
 

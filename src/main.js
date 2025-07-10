@@ -1,9 +1,9 @@
-import Vue from 'vue'
+import Buefy from 'buefy'
+import Vue, { createApp } from 'vue'
 import App from './App.vue'
+import './assets/scss/app.scss'
 import router from './router'
 import store from './store'
-import Buefy from 'buefy'
-import './assets/scss/app.scss'
 
 Vue.use(Buefy)
 
@@ -17,8 +17,4 @@ Vue.mixin({
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+createApp(App).use(router).use(store).mount('#app')

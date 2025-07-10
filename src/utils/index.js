@@ -32,6 +32,7 @@ async function getImage (retry = 0) {
 
 async function createImage (src) {
   return new Promise((resolve, reject) => {
+    // eslint-disable-next-line
     const img = new Image()
     img.addEventListener('load', () => resolve(img))
     img.addEventListener('error', () => reject)

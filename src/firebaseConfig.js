@@ -1,6 +1,5 @@
-import firebase, { firestore } from 'firebase/app'
-import 'firebase/firestore'
-import 'firebase/functions'
+import { initializeApp } from 'firebase/app'
+import { Blob, FieldValue, getFirestore, collection } from 'firebase/firestore'
 
 const config = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -10,14 +9,14 @@ const config = {
   storageBucket: `${process.env.VUE_APP_FIREBASE_PROJECT_ID}.appspot.com`
 }
 
-firebase.initializeApp(config)
+const app = initializeApp(config)
 
-const db = firebase.firestore()
-const gamesCollection = db.collection('games')
+const db = getFirestore(app)
+const gamesCollection = collection(db, 'games')
 
 export default {
   db,
   gamesCollection,
-  FieldValue: firestore.FieldValue,
-  Blob: firestore.Blob
+  FieldValue,
+  Blob
 }

@@ -12,6 +12,7 @@ export default {
   name: 'GameImageCanvas',
   props: {
     img: {
+      // eslint-disable-next-line
       type: Image,
       required: true
     }
